@@ -1,0 +1,3 @@
+﻿  parallel_lab5.cpp
+C:\Users\zelen\source\repos\parallel_lab5\parallel_lab5.cpp(91,53): warning C4244: аргумент: преобразование "size_t" в "const std::complex<double>::_Ty", возможна потеря данных
+  parallel_lab5.vcxproj -> C:\Users\zelen\source\repos\parallel_labs\x64\Debug\parallel_lab5.exe

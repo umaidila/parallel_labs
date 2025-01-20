@@ -1,0 +1,4 @@
+T,Duration,Speedup
+Scalar,744.4,1.0
+AVX2,192.4,3.86902
+AVX512,96.7,7.69804
