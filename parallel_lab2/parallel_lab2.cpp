@@ -28,16 +28,7 @@ void matrix_addition_avx(double* result, const double* mat1, const double* mat2,
     }
 }
 
-void matrix_addition_avx512(double* result, const double* mat1, const double* mat2, size_t num_cols, size_t num_rows)
-{
-    for (size_t i = 0; i < num_cols * num_rows / 8; ++i)
-    {
-        __m512d vec1 = _mm512_loadu_pd(&mat1[i * 8]);
-        __m512d vec2 = _mm512_loadu_pd(&mat2[i * 8]);
-        __m512d sum = _mm512_add_pd(vec1, vec2);
-        _mm512_storeu_pd(&result[i * 8], sum);
-    }
-}
+
 
 int main()
 {
@@ -67,7 +58,7 @@ int main()
         };
 
 
-    matrix_addition_avx512(result.data(), mat1.data(), mat2.data(), COLUMNS, ROWS);
+    matrix_addition_avx(result.data(), mat1.data(), mat2.data(), COLUMNS, ROWS);
     for (std::size_t i = 0; i < COLUMNS * ROWS; ++i)
     {
         if (result[i] != 0.0)
@@ -107,22 +98,6 @@ int main()
 
     std::cout << "AVX addition: " << avx_avg_time << " ms, speedup = " << scalar_avg_time / avx_avg_time << "\n";
     output_file << "AVX," << avx_avg_time << "," << scalar_avg_time / avx_avg_time << "\n";
-
-  
-
-    // AVX512
-    double avx512_avg_time = 0.0;
-    for (std::size_t i = 0; i < EPOCHS; ++i)
-    {
-        auto start_time = std::chrono::steady_clock::now();
-        matrix_addition_avx512(result.data(), mat1.data(), mat2.data(), COLUMNS, ROWS);
-        auto end_time = std::chrono::steady_clock::now();
-        avx512_avg_time += std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-    }
-    avx512_avg_time /= EPOCHS;
-
-    std::cout << "AVX512 addition: " << avx512_avg_time << " ms, speedup = " << scalar_avg_time / avx512_avg_time << "\n";
-    output_file << "AVX512," << avx512_avg_time << "," << scalar_avg_time / avx512_avg_time << "\n";
 
   
     output_file.close();
