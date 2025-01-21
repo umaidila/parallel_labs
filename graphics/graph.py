@@ -1,29 +1,36 @@
 import matplotlib.pyplot as plt
-import pandas
+import pandas as pd
 
 # Чтение данных
-data = pandas.read_csv("output5.csv")
+data = pd.read_csv("output1.csv")
 length = data.shape[0]
 
-# Получение данных для графика
-t = data[0:0 + length]["T"]
-duration = data[0:0 + length]["Duration"]
-duration_float = [float(i) for i in duration]
+# Получение данных для графиков
+t = data["T"]
+duration = data["Duration"].astype(float)
+speedup = data["Speedup"].astype(float)
 
 # Настройка размеров фигуры
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(10, 6))
 
-# Построение графика
-plt.plot(t, duration_float, label="Время выполнения", c="blue")
+# Построение графиков на одном графике
+fig, ax1 = plt.subplots(figsize=(10, 6))
 
-# Автоматическая настройка высоты графика по амплитуде
-y_min = min(duration_float) * 0.9  # Добавляем небольшой отступ
-y_max = max(duration_float) * 1.1  # Добавляем небольшой отступ
-plt.ylim(y_min, y_max)
+# График времени выполнения
+color = 'blue'
+ax1.set_xlabel('Количество потоков')
+ax1.set_ylabel('Время выполнения, мс', color=color)
+ax1.plot(t, duration, label="Время выполнения", color=color)
+ax1.tick_params(axis='y', labelcolor=color)
 
-# Настройка подписей и легенды
-plt.xlabel('Количество потоков')
-plt.ylabel('Время выполнения, мс')
-plt.xticks(t)
-plt.legend()
+# Создание второго графика с другой осью Y
+ax2 = ax1.twinx()  # Дублирование оси X
+color = 'green'
+ax2.set_ylabel('Ускорение', color=color)
+ax2.plot(t, speedup, label="Ускорение", color=color)
+ax2.tick_params(axis='y', labelcolor=color)
+
+# Добавление легенды и заголовка
+fig.suptitle("Графики времени выполнения и ускорения")
+plt.tight_layout()
 plt.show()
