@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 	}
 	std::cout << "ok.==\n";
 
-	std::ofstream file("output.csv");
+	std::ofstream file("output4.csv");
 	if (!file)
 	{
 		std::cerr << "Failed to open file!\n";

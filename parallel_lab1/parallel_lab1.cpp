@@ -51,7 +51,7 @@ double integral_parallel(double start, double end)
 
 int main()
 {
-    std::ofstream file("output.csv");
+    std::ofstream file("output1.csv");
     if (!file)
     {
         std::cerr << "Failed to open file!\n";

@@ -104,7 +104,7 @@ int main()
     const std::size_t matrixOrder = 16 * 4 * 9;
     const std::size_t experimentCount = 10;
 
-    std::ofstream output("output.csv");
+    std::ofstream output("output3.csv");
     if (!output.is_open())
     {
         std::cerr << "Error: Unable to open output file!\n";

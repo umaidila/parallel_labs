@@ -43,7 +43,7 @@ int main()
 {
     const std::size_t EPOCHS = 10;
 
-    std::ofstream output_file("output.csv");
+    std::ofstream output_file("output2.csv");
     if (!output_file.is_open())
     {
         std::cerr << "error opening output file\n";
