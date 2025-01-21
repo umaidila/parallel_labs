@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 		std::cout << std::setw(2) << T << " | 0x" << std::setw(2 * sizeof(IntegerWord)) << std::setfill('0') << std::hex << measurements[T - 1].result;
 		std::cout << " | " << std::setfill(' ') << std::setw(14) << std::dec << measurements[T - 1].time.count();
 		std::cout << " | " << (static_cast<double>(measurements[0].time.count()) / measurements[T - 1].time.count()) << "\n";
-		file << T << "," << measurements[T - 1].time.count() << "\n";
+		file << T << "," << measurements[T - 1].time.count() << "," (static_cast<double>(measurements[0].time.count()) / measurements[T - 1].time.count()) <<  "\n";
 	}
 	file.close();
 
