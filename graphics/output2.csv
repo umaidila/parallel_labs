@@ -1,0 +1,3 @@
+T,Duration,speedup
+scalar,35.4,1.0
+AVX,38,0.931579
