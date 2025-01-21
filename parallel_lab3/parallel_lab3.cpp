@@ -30,28 +30,6 @@ void multiply_scalar(double* A, size_t colsA, size_t rowsA,
     }
 }
 
-void multiply_avx512(double* A, size_t colsA, size_t rowsA,
-    const double* B, size_t colsB, size_t rowsB,
-    const double* C, size_t colsC, size_t rowsC)
-{
-    assert(colsB == rowsC && colsA == colsC && rowsA == rowsB);
-
-    for (size_t rowBlock = 0; rowBlock < rowsB / 8; ++rowBlock)
-    {
-        for (size_t col = 0; col < colsC; ++col)
-        {
-            __m512d sum = _mm512_setzero_pd();
-            for (size_t k = 0; k < rowsC; ++k)
-            {
-                __m512d bVec = _mm512_loadu_pd(B + k * rowsB + rowBlock * 8);
-                __m512d cVal = _mm512_set1_pd(C[col * rowsC + k]);
-                sum = _mm512_fmadd_pd(bVec, cVal, sum);
-            }
-            _mm512_storeu_pd(A + col * rowsA + rowBlock * 8, sum);
-        }
-    }
-}
-
 
 void multiply_avx(double* A, size_t colsA, size_t rowsA,
     const double* B, size_t colsB, size_t rowsB,
@@ -128,10 +106,7 @@ int main()
         A.data(), matrixOrder, matrixOrder,
         B.data(), matrixOrder, matrixOrder);
 
-    multiply_avx512(E.data(), matrixOrder, matrixOrder,
-        A.data(), matrixOrder, matrixOrder,
-        B.data(), matrixOrder, matrixOrder);
-
+    
     if (memcmp(C.data(), D.data(), matrixOrder * matrixOrder * sizeof(double)) != 0 ||
         memcmp(C.data(), E.data(), matrixOrder * matrixOrder * sizeof(double)) != 0)
     {
@@ -173,21 +148,6 @@ int main()
     avx2Time /= experimentCount;
     std::cout << "AVX2 multiplication: " << avx2Time << " ms, Speedup = " << scalarTime / avx2Time << "\n";
     output << "AVX2," << avx2Time << "," << scalarTime / avx2Time << "\n";
-
-    double avx512Time = 0;
-    for (std::size_t i = 0; i < experimentCount; ++i)
-    {
-        randomize_matrix(A.data(), matrixOrder);
-        auto start = std::chrono::steady_clock::now();
-        multiply_avx512(E.data(), matrixOrder, matrixOrder,
-            A.data(), matrixOrder, matrixOrder,
-            B.data(), matrixOrder, matrixOrder);
-        auto end = std::chrono::steady_clock::now();
-        avx512Time += std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    }
-    avx512Time /= experimentCount;
-    std::cout << "AVX512 multiplication: " << avx512Time << " ms, Speedup = " << scalarTime / avx512Time << "\n";
-    output << "AVX512," << avx512Time << "," << scalarTime / avx512Time << "\n";
 
     output.close();
     return 0;
